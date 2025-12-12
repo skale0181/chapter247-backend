@@ -16,17 +16,17 @@ router.get('/', auth, async (req, res) => {
     } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
+// get todos by user id
 router.get('/user/:userId', auth, async (req, res) => {
     const { userId } = req.params;
 
     try {
         // Option 1: query /todos with userId param (works if DummyJSON supports filtering)
-        const resp = await axios.get(`${DUMMY}/todos`, {
+        const resp = await axios.get(`${DUMMY}/todos/user/${userId}`, {
             headers: {
                 // forward access token if available - DummyJSON may require it for protected endpoints
                 ...(req.accessToken ? { Authorization: `Bearer ${req.accessToken}` } : {})
             },
-            params: { userId } // filter server-side if supported
         });
 
         // resp.data may contain { todos: [...], total, skip, limit } per DummyJSON
@@ -38,30 +38,43 @@ router.get('/user/:userId', auth, async (req, res) => {
     }
 });
 
-
-// add todo
-router.post('/', auth, async (req, res) => {
+// add todo 
+router.post('/add-todo', auth, async (req, res) => {
+    const { todo, completed, userId } = req.body;
     try {
-        const resp = await axios.post(`${DUMMY}/todos/add`, req.body, {
+        const resp = await axios.post(`${DUMMY}/todos/add`, { todo, completed, userId }, {
             headers: { Authorization: `Bearer ${req.accessToken}`, 'Content-Type': 'application/json' }
         });
         res.json(resp.data);
     } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-// update
-router.put('/:id', auth, async (req, res) => {
+// update todo status
+router.put('/update-status/:id', auth, async (req, res) => {
+    const { completed } = req.body;
     try {
         const id = req.params.id;
-        const resp = await axios.put(`${DUMMY}/todos/${id}`, req.body, {
+        const resp = await axios.put(`${DUMMY}/todos/${id}`, { completed }, {
             headers: { Authorization: `Bearer ${req.accessToken}` }
         });
         res.json(resp.data);
     } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-// delete
-router.delete('/:id', auth, async (req, res) => {
+// update todo data
+router.put('/update-todo/:id', auth, async (req, res) => {
+    const { todo, completed } = req.body;
+    try {
+        const id = req.params.id;
+        const resp = await axios.put(`${DUMMY}/todos/${id}`, { todo, completed }, {
+            headers: { Authorization: `Bearer ${req.accessToken}` }
+        });
+        res.json(resp.data);
+    } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+// delete todo 
+router.delete('/delete-todo/:id', auth, async (req, res) => {
     try {
         const id = req.params.id;
         const resp = await axios.delete(`${DUMMY}/todos/${id}`, {
