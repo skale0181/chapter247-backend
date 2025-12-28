@@ -17,8 +17,7 @@ const app = express();
 app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies
 app.use(cors({
-    origin: ['http://localhost:3000', 'https://chaper247-frontend.vercel.app'], // Must specify exact origin when using credentials
-    credentials: true // Enable credentials (cookies, auth headers)
+  origin: '*',   // Allow all origins
 }));
 
 // Register API routes
