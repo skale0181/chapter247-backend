@@ -2,9 +2,9 @@
 require('dotenv').config();
 
 // Import core dependencies
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
+const express = require('express'); // express.js
+const cors = require('cors'); // cors middleware
+const cookieParser = require('cookie-parser'); // cookie parser middleware use for cookies
 
 // Import route modules
 const authRoutes = require('./routes/auth');
@@ -17,7 +17,7 @@ const app = express();
 app.use(express.json()); // Parse JSON request bodies
 app.use(cookieParser()); // Parse cookies
 app.use(cors({
-    origin: 'http://localhost:3000', // Must specify exact origin when using credentials
+    origin: ['http://localhost:3000', 'https://chaper247-frontend.vercel.app'], // Must specify exact origin when using credentials
     credentials: true // Enable credentials (cookies, auth headers)
 }));
 
